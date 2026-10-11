@@ -1,0 +1,39 @@
+### Проверка сервисов (через API Gateway, порт 8080)
+
+### 1. Создать пользователя
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "Алина",
+  "email": "alina@example.com"
+}
+
+### 2. Получить всех пользователей
+GET http://localhost:8080/users
+
+### 3. Создать задачу для пользователя 1
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "Сделать финальный проект",
+  "completed": false,
+  "userId": 1
+}
+
+### 4. Получить все задачи
+GET http://localhost:8080/tasks
+
+### 5. Получить задачу по id
+GET http://localhost:8080/tasks/1
+
+### 6. Попытка создать задачу для несуществующего пользователя (ожидаем ошибку)
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "Задача для несуществующего",
+  "completed": false,
+  "userId": 999
+}

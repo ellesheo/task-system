@@ -1,0 +1,30 @@
+ПРОВЕРКА РАБОТЫ СИСТЕМЫ task-system
+
+===== docker compose ps =====
+NAME                                  IMAGE                               COMMAND                  SERVICE                 CREATED          STATUS                    PORTS
+task-system-db-1                      postgres:16                         "docker-entrypoint.s…"   db                      29 seconds ago   Up 29 seconds (healthy)   5432/tcp
+task-system-gateway-1                 task-system-gateway                 "dotnet Gateway.dll"     gateway                 29 seconds ago   Up 22 seconds             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+task-system-notifications-service-1   task-system-notifications-service   "dotnet Notification…"   notifications-service   29 seconds ago   Up 29 seconds             8080/tcp
+task-system-tasks-service-1           task-system-tasks-service           "dotnet TasksService…"   tasks-service           29 seconds ago   Up 22 seconds             8080/tcp
+task-system-users-service-1           task-system-users-service           "dotnet UsersService…"   users-service           29 seconds ago   Up 23 seconds             8080/tcp
+
+===== POST /users =====
+{"id":2,"name":"Иван","email":"ivan@example.com"}
+[HTTP 201]
+
+===== POST /tasks (userId=1) =====
+{"id":2,"title":"Проверить систему","completed":false,"userId":1}
+[HTTP 201]
+
+===== GET /tasks =====
+[{"id":1,"title":"Сделать финальный проект","completed":false,"userId":1},{"id":2,"title":"Проверить систему","completed":false,"userId":1}]
+
+===== Валидация: POST /tasks userId=999 (ожидаем 400) =====
+{"error":"Пользователь 999 не найден"}
+[HTTP 400]
+
+===== Лог notifications-service =====
+notifications-service-1  |       УВЕДОМЛЕНИЕ: Создана задача 'Проверить систему' для пользователя 1
+
+===== Лог tasks-service =====
+tasks-service-1  |       Создана задача 2 для пользователя 1
